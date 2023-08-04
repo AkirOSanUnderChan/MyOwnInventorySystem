@@ -10,6 +10,7 @@ public class InventoryManager : MonoBehaviour
     public List<Item> inventoryItems = new List<Item>();
     public Transform itemsParent;
     public GameObject itemCellPrefab;
+    public Button dropButton; // Public змінна для посилання на кнопку "Викинути предмет"
 
     private void Awake()
     {
@@ -57,11 +58,10 @@ public class InventoryManager : MonoBehaviour
 
     private void UpdateInventoryUI()
     {
-        foreach (Transform child in itemsParent)
-        {
-            Destroy(child.gameObject);
-        }
+        // Очищуємо попередні клітинки айтемів на канвасі
+        
 
+        // Створюємо нові клітинки айтемів для всіх предметів у списку inventoryItems
         for (int i = 0; i < inventoryItems.Count; i++)
         {
             CreateItemCell(inventoryItems[i], i);
@@ -78,9 +78,6 @@ public class InventoryManager : MonoBehaviour
         TextMeshProUGUI itemStackText = newItemCell.GetComponentInChildren<TextMeshProUGUI>();
         itemStackText.text = item.stackable ? item.currentStack.ToString() : "";
 
-        Button dropButton = newItemCell.transform.Find("Drop").GetComponent<Button>();
-        dropButton.gameObject.SetActive(false);
-
         // Підписуємося на події onMouseEnterAction та onMouseExitAction айтема
         ItemPickup itemPickup = newItemCell.GetComponent<ItemPickup>();
         itemPickup.onMouseEnterAction += () =>
@@ -92,10 +89,7 @@ public class InventoryManager : MonoBehaviour
         {
             dropButton.gameObject.SetActive(false);
         };
-
-        dropButton.onClick.AddListener(() => OnDropButtonClick(index));
     }
-
     private void OnDropButtonClick(int index)
     {
         RemoveItem(index);
