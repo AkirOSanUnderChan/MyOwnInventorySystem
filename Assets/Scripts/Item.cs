@@ -12,3 +12,9 @@ public class Item : ScriptableObject
     public int maxStack; // Максимальна кількість предметів в стаку
     public int currentStack; // Поточна кількість предметів в стаку
 }
+
+//public sealed class ItemData
+//{
+//    public string UniqueName;
+//    public int StackCount;
+//}

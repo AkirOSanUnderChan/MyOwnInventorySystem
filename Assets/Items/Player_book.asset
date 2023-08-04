@@ -15,6 +15,6 @@ MonoBehaviour:
   itemName: Player book
   description: Use it for upgrade your skills
   itemImage: {fileID: 21300000, guid: 586f227c800449c449cb37a4773a2c05, type: 3}
-  stackable: 0
-  maxStack: 1
-  currentStack: 1
+  stackable: 1
+  maxStack: 4
+  currentStack: 10

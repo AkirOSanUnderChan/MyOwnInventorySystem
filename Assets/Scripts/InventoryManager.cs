@@ -9,8 +9,12 @@ public class InventoryManager : MonoBehaviour
 
     public List<Item> inventoryItems = new List<Item>();
     public Transform itemsParent;
-    public GameObject itemCellPrefab;
+    public ItemCell itemCellPrefab;
     public Button dropButton; // Public змінна для посилання на кнопку "Викинути предмет"
+
+    private List<ItemCell> _itemCells = new();
+
+    private int _selectedCellIndex = 0;
 
     private void Awake()
     {
@@ -59,7 +63,7 @@ public class InventoryManager : MonoBehaviour
     private void UpdateInventoryUI()
     {
         // Очищуємо попередні клітинки айтемів на канвасі
-        
+        itemsParent.DestroyChildrens();
 
         // Створюємо нові клітинки айтемів для всіх предметів у списку inventoryItems
         for (int i = 0; i < inventoryItems.Count; i++)
@@ -70,28 +74,24 @@ public class InventoryManager : MonoBehaviour
 
     private void CreateItemCell(Item item, int index)
     {
-        GameObject newItemCell = Instantiate(itemCellPrefab, itemsParent);
-
-        Image itemImage = newItemCell.transform.Find("ItemIMG").GetComponent<Image>();
-        itemImage.sprite = item.itemImage;
-
-        TextMeshProUGUI itemStackText = newItemCell.GetComponentInChildren<TextMeshProUGUI>();
-        itemStackText.text = item.stackable ? item.currentStack.ToString() : "";
-
-        // Підписуємося на події onMouseEnterAction та onMouseExitAction айтема
-        ItemPickup itemPickup = newItemCell.GetComponent<ItemPickup>();
-        itemPickup.onMouseEnterAction += () =>
-        {
-            dropButton.gameObject.SetActive(true);
-        };
-
-        itemPickup.onMouseExitAction += () =>
-        {
-            dropButton.gameObject.SetActive(false);
-        };
+        var newItemCell = Instantiate(itemCellPrefab, itemsParent);
+        newItemCell.UpdateVisual(item, index);
+        _itemCells.Add(newItemCell);
+        newItemCell.OnClicked += ItemCellOnClicked;
     }
-    private void OnDropButtonClick(int index)
+
+    private void ItemCellOnClicked(ItemCell cell, int index)
     {
-        RemoveItem(index);
+        //RemoveItem(index);
+        _selectedCellIndex = index;
+    }
+
+    public void RemoveSelecteditem()
+    {
+        if (_selectedCellIndex != -1)
+        {
+            RemoveItem(_selectedCellIndex);
+            _selectedCellIndex = -1;
+        }
     }
 }
